@@ -1,7 +1,5 @@
 #!/usr/bin/python3
 
-import sys
-
 class RuleN:
     """Rule 110, Rule 30, Rule 90 and Rule 184 interpreter. Usage:
     
