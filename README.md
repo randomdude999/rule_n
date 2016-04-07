@@ -4,7 +4,7 @@ This is a Python implemetation of Rule 110, Rule 30, Rule 90, Rule 184 and any o
 
 ## Usage
 
-Put `rule_n.py` somewhere in your Python path. Then:
+Download and put [`rule_n.py`](https://raw.githubusercontent.com/randomdude999/rule_n/master/rule_n.py) somewhere in your Python path. Then:
 
 ```python
 
