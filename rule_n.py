@@ -16,9 +16,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+
 class RuleN:
     """Rule 110, Rule 30, Rule 90 and Rule 184 interpreter. Usage:
-    
+
     rule_110 = rule_n.RuleN(110, size=100) # Create Rule 110 interpreter
                                            # with 100 wide "canvas"
 
@@ -27,7 +28,7 @@ Default rule is 110, so the example could be shortened to:
     rule_110 = rule_n.RuleN(size=100)
 
 Default size is 100, so even shorter:
-    
+
     rule_110 = rule_n.RuleN()
 
     This works with any numbered rule numbered in this manner, see the
@@ -38,7 +39,7 @@ Default size is 100, so even shorter:
         for x in range(0, 8):
             rules.append(bool(desc & 2**x))
         return rules
-        
+
     def __init__(self, rule_descriptor=110, size=100):
         if type(size) is not int:
             raise TypeError("size must be integer")
@@ -49,7 +50,7 @@ Default size is 100, so even shorter:
         elif not 255 > rule_descriptor > 0:
             raise TypeError("rule_descriptor must be integer between 1 and "
                             "255")
-        
+
         self.rules = self._get_rules(rule_descriptor)
         self.size = size
 
@@ -81,15 +82,15 @@ Default size is 100, so even shorter:
             result = self._process_bin_ints(op_1, op_2, op_3)
             new_state.append(self.rules[result])
         return new_state
-    
+
     def iterate(self, state):
         """Process a starting state over and over again. Example:
-        
+
         for x in rule_110(state):
             # Do something with the current state here
             # Note: You MUST break this yourself, or deal with the consequences
 
-        """
+"""
         cur_state = state
         while True:
             cur_state = self.process(cur_state)
