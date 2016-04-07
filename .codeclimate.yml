@@ -15,5 +15,4 @@ engines:
     paths:
       - "**.py"
 exclude_paths:
-  - test.py
-  - *.pyc
+  - "test.py"
