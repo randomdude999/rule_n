@@ -14,7 +14,7 @@ Default size is 100, so even shorter:
     
     rule_110 = rule_n.RuleN()
 
-    This works with eny numbered rule numbered in this manner, see the
+    This works with any numbered rule numbered in this manner, see the
     "Definition" section on the Wikipedia page on "Rule 110" to learn more.
 """
     def __init__(self, rule_descriptor=110, size=100):
@@ -59,7 +59,7 @@ Default size is 100, so even shorter:
             new_state.append(self.rules[result])
         return new_state
     
-    def iter(self, state):
+    def iterate(self, state):
         """Process a starting state over and over again. Example:
         
         for x in rule_110(state):
@@ -69,5 +69,5 @@ Default size is 100, so even shorter:
         """
         cur_state = state
         while True:
-            yield cur_state
             cur_state = self.process(cur_state)
+            yield cur_state
