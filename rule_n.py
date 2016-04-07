@@ -33,7 +33,7 @@ Default size is 100, so even shorter:
     This works with any numbered rule numbered in this manner, see the
     "Definition" section on the Wikipedia page on "Rule 110" to learn more.
 """
-    def _get_rules_from_descriptor(desc):
+    def _get_rules(self, desc):
         rules = []
         for x in range(0, 8):
             rules.append(bool(desc & 2**x))
@@ -50,10 +50,10 @@ Default size is 100, so even shorter:
             raise TypeError("rule_descriptor must be integer between 1 and "
                             "255")
         
-        self.rules = _get_rules_from_descriptor(rule_descriptor)
+        self.rules = self._get_rules(rule_descriptor)
         self.size = size
 
-    def _process_bin_ints(op1, op2, op3):
+    def _process_bin_ints(self, op1, op2, op3):
         result = 0
         if op1:
             result += 4
@@ -78,7 +78,7 @@ Default size is 100, so even shorter:
                 op_3 = 0
             else:
                 op_3 = state[x + 1]
-            result = _process_bin_ints(op1, op2, op3)
+            result = self._process_bin_ints(op_1, op_2, op_3)
             new_state.append(self.rules[result])
         return new_state
     
