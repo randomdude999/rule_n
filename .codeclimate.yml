@@ -10,8 +10,6 @@ engines:
     enabled: true
   fixme:
     enabled: true
-  pylint:
-    enabled: true
 ratings:
   paths:
     - "**.py"
