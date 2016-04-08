@@ -16,8 +16,41 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+"""Python Rule 110 (and 30, 90 and 184) implemetation.
 
-class RuleN:
+Usage:
+
+    rule_110 = rule_n.RuleN(110, size=100)
+    rule_30 = rule_n.RuleN(30, size=100)
+
+    output = rule_110.process([True, False, True])
+
+See documentation on RuleN.process, RuleN and RuleN.iterate for
+for more information.
+
+"""
+
+
+def _get_rules(desc):
+    """get a list of true/false from a rule descriptor, such as 110"""
+    rules = []
+    for i in range(0, 8):
+        rules.append(bool(desc & 2**i))
+    return rules
+
+
+def _process_bin_ints(*args):
+    """Process binary values into a number (used to index the rules)"""
+    result = 0
+    l = list(args)
+    l.reverse()
+    for i, b in enumerate(l):
+        if b:
+            result += 2**i
+    return result
+
+
+class RuleN(object):
     """Rule 110, Rule 30, Rule 90 and Rule 184 interpreter. Usage:
 
     rule_110 = rule_n.RuleN(110, size=100) # Create Rule 110 interpreter
@@ -34,12 +67,6 @@ Default size is 100, so even shorter:
     This works with any numbered rule numbered in this manner, see the
     "Definition" section on the Wikipedia page on "Rule 110" to learn more.
 """
-    def _get_rules(self, desc):
-        rules = []
-        for x in range(0, 8):
-            rules.append(bool(desc & 2**x))
-        return rules
-
     def __init__(self, rule_descriptor=110, size=100):
         if type(size) is not int:
             raise TypeError("size must be integer")
@@ -51,35 +78,34 @@ Default size is 100, so even shorter:
             raise TypeError("rule_descriptor must be integer between 1 and "
                             "255")
 
-        self.rules = self._get_rules(rule_descriptor)
+        self.rules = _get_rules(rule_descriptor)
         self.size = size
 
-    def _process_bin_ints(self, op1, op2, op3):
-        result = 0
-        if op1:
-            result += 4
-        if op2:
-            result += 2
-        if op3:
-            result += 1
-        return result
-
     def process(self, state):
-        """Process a state and return the next state"""
+        """Process a state and return the next state
+Usage:
+
+    out = rule_110.process([True, False, True]) # If your input is not as
+                                                # long as your "canvas", the
+                                                # input is left-padded with
+    len(out) # 100                              # False's
+    out[96:100] # [True, True, True, True]
+    out[0:96] # [False] * 96
+"""
         if len(state) < self.size:
             state = [False] * (self.size - len(state)) + state
         new_state = []
-        for x in range(0, self.size):
-            if x == 0:
+        for i in range(0, self.size):
+            if i == 0:
                 op_1 = 0
             else:
-                op_1 = state[x - 1]
-            op_2 = state[x]
-            if x == self.size - 1:
+                op_1 = state[i - 1]
+            op_2 = state[i]
+            if i == self.size - 1:
                 op_3 = 0
             else:
-                op_3 = state[x + 1]
-            result = self._process_bin_ints(op_1, op_2, op_3)
+                op_3 = state[i + 1]
+            result = _process_bin_ints(op_1, op_2, op_3)
             new_state.append(self.rules[result])
         return new_state
 
