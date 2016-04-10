@@ -20,8 +20,8 @@
 
 Usage:
 
-    rule_110 = rule_n.RuleN(110, size=100)
-    rule_30 = rule_n.RuleN(30, size=100)
+    rule_110 = rule_n.RuleN(110)
+    rule_30 = rule_n.RuleN(30)
 
     output = rule_110.process([True, False, True])
 
@@ -39,73 +39,75 @@ def _get_rules(desc):
     return rules
 
 
-def _process_bin_ints(*args):
-    """Process binary values into a number (used to index the rules)"""
+def _process_cell(i, state):
+    """Process 3 cells and return a value from 0 to 7. """
+    if i == 0:
+        op_1 = 0
+    else:
+        op_1 = state[i - 1]
+    op_2 = state[i]
+    if i == len(state) - 1:
+        op_3 = 0
+    else:
+        op_3 = state[i + 1]
     result = 0
-    l = list(args)
-    l.reverse()
-    for i, b in enumerate(l):
-        if b:
+    op_list = [op_3, op_2, op_1]
+    for i, val in enumerate(op_list):
+        if val:
             result += 2**i
     return result
+
+def _remove_lead_trail_false(bool_list):
+    """Remove leading and trailing false's from a list"""
+    for i in (0, -1):
+        while bool_list and not bool_list[i]:
+            bool_list.pop(i)
+    return bool_list
 
 
 class RuleN(object):
     """Rule 110, Rule 30, Rule 90 and Rule 184 interpreter. Usage:
 
-    rule_110 = rule_n.RuleN(110, size=100) # Create Rule 110 interpreter
-                                           # with 100 wide "canvas"
+    rule_110 = rule_n.RuleN(110) # Create Rule 110 interpreter
 
 Default rule is 110, so the example could be shortened to:
-
-    rule_110 = rule_n.RuleN(size=100)
-
-Default size is 100, so even shorter:
 
     rule_110 = rule_n.RuleN()
 
     This works with any numbered rule numbered in this manner, see the
     "Definition" section on the Wikipedia page on "Rule 110" to learn more.
 """
-    def __init__(self, rule_descriptor=110, size=100):
-        if type(size) is not int:
-            raise TypeError("size must be integer")
-        elif type(rule_descriptor) is not int:
-            raise TypeError("rule_descriptor must be integer")
-        elif size < 1:
-            raise TypeError("size must be positive integer")
-        elif not 255 > rule_descriptor > 0:
-            raise TypeError("rule_descriptor must be integer between 1 and "
-                            "255")
+    def __init__(self, rule_descriptor=110):
+        if type(rule_descriptor) is not int:
+            raise TypeError("rule descriptor must be integer")
+        elif rule_descriptor < 1:
+            raise TypeError("rule descriptor must be more than 0")
+        elif rule_descriptor > 255:
+            raise TypeError("rule descriptor must be less than 256")
+        elif rule_descriptor % 2 == 1:
+            raise TypeError("rule descriptor must be odd (TODO: make "
+                            "this not exist)")
 
         self.rules = _get_rules(rule_descriptor)
-        self.size = size
 
     def process(self, state):
         """Process a state and return the next state
 Usage:
 
-    out = rule_110.process([True, False, True]) # If your input is not as
-                                                # long as your "canvas", the
-                                                # input is left-padded with
-    len(out) # 100                              # False's
-    out[96:100] # [True, True, True, True]
-    out[0:96] # [False] * 96
+    out = rule_110.process([True, False, True])
+    len(out) # 5, because a False is added to either side
+    out # [True, True, True, True, False]
+    out = rule_110.process([False, True, False, True])
+    len(out) # still 5, because leading / trailing False's are removed
 """
-        if len(state) < self.size:
-            state = [False] * (self.size - len(state)) + state
+        if type(state) is not list:
+            raise TypeError("state must be list")
+        state = _remove_lead_trail_false(state)
+        state.insert(0, False)
+        state.append(False)
         new_state = []
-        for i in range(0, self.size):
-            if i == 0:
-                op_1 = 0
-            else:
-                op_1 = state[i - 1]
-            op_2 = state[i]
-            if i == self.size - 1:
-                op_3 = 0
-            else:
-                op_3 = state[i + 1]
-            result = _process_bin_ints(op_1, op_2, op_3)
+        for i in range(0, len(state)):
+            result = _process_cell(i, state)
             new_state.append(self.rules[result])
         return new_state
 
@@ -117,6 +119,8 @@ Usage:
             # Note: You MUST break this yourself, or deal with the consequences
 
 """
+        if type(state) is not list:
+            raise TypeError("state must be list")
         cur_state = state
         while True:
             cur_state = self.process(cur_state)

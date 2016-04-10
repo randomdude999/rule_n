@@ -14,22 +14,20 @@ Download and put [`rule_n.py`](https://raw.githubusercontent.com/randomdude999/r
 
 import rule_n
 
-rule_110 = rule_n.RuleN(110, size=100) # The size is the size of the imaginary
-                                       # 'canvas' on which the stuff happens
-rule_30 = rule_n.RuleN(30)  # Default size is 100, so that can be omitted
+rule_110 = rule_n.RuleN(110)
+rule_30 = rule_n.RuleN(30)
 rule_184 = rule_n.RuleN(184)  # Works with anything from 1 to 255
+rule_111 = rule_n.RuleN(111)  # TypeError: rule descriptor must be even!
 rule_110 = rule_n.RuleN()  # Default rule is 110, as that is the most common
 
-data = rule_110.process([True, False, True]) # If your provided input is not 
-                                             # the width of the 'canvas', it
-                                             # is left-padded with False's
-len(data) # 100
-data[96:100] # [True, True, True, True]
-data[0:96] # [False] * 96
+data = rule_110.process([True, False, True]) 
+len(data) == 5  # because a False is addad to both sides
+data == [True, True, True, True, False]
 
 data_2 = rule_110.process([1, 0, 1]) # You can use any data type, as long as
                                      # the boolean values of these are correct
-data == data_2 # True
+                                     # Return values are always in boolean
+data == data_2
 
 i = 0
 for x in rule_110.iterate([1, 0, 1]): # Repeatedly process a state
