@@ -119,8 +119,6 @@ Usage:
             # Note: You MUST break this yourself, or deal with the consequences
 
 """
-        if type(state) is not list:
-            raise TypeError("state must be list")
         cur_state = state
         while True:
             cur_state = self.process(cur_state)
