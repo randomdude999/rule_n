@@ -57,6 +57,7 @@ def _process_cell(i, state):
             result += 2**i
     return result
 
+
 def _remove_lead_trail_false(bool_list):
     """Remove leading and trailing false's from a list"""
     for i in (0, -1):
@@ -78,7 +79,7 @@ Default rule is 110, so the example could be shortened to:
     "Definition" section on the Wikipedia page on "Rule 110" to learn more.
 """
     def __init__(self, rule_descriptor=110):
-        if type(rule_descriptor) is not int:
+        if not isinstance(rule_descriptor, int):
             raise TypeError("rule descriptor must be integer")
         elif rule_descriptor < 1:
             raise TypeError("rule descriptor must be more than 0")
@@ -100,7 +101,7 @@ Usage:
     out = rule_110.process([False, True, False, True])
     len(out) # still 5, because leading / trailing False's are removed
 """
-        if type(state) is not list:
+        if not isinstance(state, list):
             raise TypeError("state must be list")
         state = _remove_lead_trail_false(state)
         state.insert(0, False)
