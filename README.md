@@ -35,6 +35,9 @@ for x in rule_110.iterate([1, 0, 1]):  # Repeatedly process a state
     i += 1
     if i == 10:
         break  # Please do this
+
+from rule_n import rule_90  # Shorthand for rule_90 = rule_n.RuleN(90)
+                            # Works with 110, 30, 90, 184
 ```
 
 More details on Rule 110 are on [Wikipedia](https://en.wikipedia.org/wiki/Rule_110).
