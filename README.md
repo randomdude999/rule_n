@@ -25,9 +25,11 @@ len(data) == 5  # because a False is addad to both sides
 data == [True, True, True, True, False]
 
 data_2 = rule_110.process([1, 0, 1])  # You can use any data type, as long as
-                                      # the boolean values of these are correct
+data == data_2                        # the boolean values of these are correct
                                       # Return values are always in boolean
-data == data_2
+
+data_3 = rule_110([True, False, True])  # Shorthand for rule_110.process(state)
+data == data_3
 
 i = 0
 for x in rule_110.iterate([1, 0, 1]):  # Repeatedly process a state

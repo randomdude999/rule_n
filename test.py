@@ -38,6 +38,12 @@ class TestBasicStuff(unittest.TestCase):
         rule_110 = rule_n.RuleN()
         self.assertRaises(TypeError, rule_110.process, "Hello!")
 
+    def test_call(self):
+        rule_110 = rule_n.RuleN()
+        out1 = rule_110.process([True, False, True])
+        out2 = rule_110([True, False, True])
+        self.assertEqual(out1, out2)
+
     def test_iter(self):
         rule_110 = rule_n.RuleN()
         start = [True]
