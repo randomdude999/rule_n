@@ -48,7 +48,7 @@ class TestBasicStuff(unittest.TestCase):
             i += 1
             if i == 3:
                 break
-        expected_outs = [ # I have no idea either
+        expected_outs = [  # XXX: I have no idea either
             [False, True , True , False],
             [False, True , True , True , False],
             [True , True , False, True , False]

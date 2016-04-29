@@ -16,17 +16,34 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Python Rule 110 (and 30, 90 and 184) implemetation.
+"""Python Rule 110 (and 30, 90 and 184) implemetation. (See <http://en.wikipedia.org/wiki/Rule_110>)
 
 Usage:
 
+    import rule_n
+
     rule_110 = rule_n.RuleN(110)
     rule_30 = rule_n.RuleN(30)
+    rule_184 = rule_n.RuleN(184)  # Works with anything from 1 to 255
+    rule_111 = rule_n.RuleN(111)  # TypeError: rule descriptor must be even!
+    rule_110 = rule_n.RuleN()  # Default rule is 110, as that is the most common
 
-    output = rule_110.process([True, False, True])
+    data = rule_110.process([True, False, True]) 
+    len(data) == 5  # because a False is addad to both sides
+    data == [True, True, True, True, False]
 
-See documentation on RuleN.process, RuleN and RuleN.iterate for
-for more information.
+    data_2 = rule_110.process([1, 0, 1]) # You can use any data type, as long as
+                                         # the boolean values of these are correct
+                                         # Return values are always in boolean
+    data == data_2
+
+    i = 0
+    for x in rule_110.iterate([1, 0, 1]): # Repeatedly process a state
+        print x
+        i += 1
+        if i == 10:
+            break
+`
 
 """
 
@@ -75,8 +92,8 @@ Default rule is 110, so the example could be shortened to:
 
     rule_110 = rule_n.RuleN()
 
-    This works with any numbered rule numbered in this manner, see the
-    "Definition" section on the Wikipedia page on "Rule 110" to learn more.
+    This works with any numbered rule numbered in this manner, see
+    <http://en.wikipedia.org/wiki/Rule_110#Definition> to learn more.
 """
     def __init__(self, rule_descriptor=110):
         if not isinstance(rule_descriptor, int):
@@ -86,8 +103,7 @@ Default rule is 110, so the example could be shortened to:
         elif rule_descriptor > 255:
             raise TypeError("rule descriptor must be less than 256")
         elif rule_descriptor % 2 == 1:
-            raise TypeError("rule descriptor must be odd (TODO: make "
-                            "this not exist)")
+            raise TypeError("rule descriptor must be even")  # FIXME
 
         self.rules = _get_rules(rule_descriptor)
 
@@ -115,7 +131,7 @@ Usage:
     def iterate(self, state):
         """Process a starting state over and over again. Example:
 
-        for x in rule_110(state):
+        for x in rule_110.iterate(state):
             # Do something with the current state here
             # Note: You MUST break this yourself, or deal with the consequences
 
@@ -124,3 +140,4 @@ Usage:
         while True:
             cur_state = self.process(cur_state)
             yield cur_state
+
