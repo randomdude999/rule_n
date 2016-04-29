@@ -59,24 +59,23 @@ def _get_rules(desc):
     """get a list of true/false from a rule descriptor, such as 110"""
     rules = []
     for i in range(0, 8):
-        rules.append(bool(desc & 2**i))
-    return rules
+        rules.append(bool(desc & 2**i))  # bool(desc & 2**i) gets if that bit
+    return rules                         # is set
 
 
 def _process_cell(i, state):
     """Process 3 cells and return a value from 0 to 7. """
     if i == 0:
-        op_1 = 0
+        op_1 = 0  # All 0's before the beginning
     else:
         op_1 = state[i - 1]
     op_2 = state[i]
     if i == len(state) - 1:
-        op_3 = 0
+        op_3 = 0  # All 0's after the end
     else:
         op_3 = state[i + 1]
     result = 0
-    op_list = [op_3, op_2, op_1]
-    for i, val in enumerate(op_list):
+    for i, val in enumerate([op_3, op_2, op_1]):
         if val:
             result += 2**i
     return result
@@ -84,6 +83,7 @@ def _process_cell(i, state):
 
 def _remove_lead_trail_false(bool_list):
     """Remove leading and trailing false's from a list"""
+    # The internet can be a wonderful place...
     for i in (0, -1):
         while bool_list and not bool_list[i]:
             bool_list.pop(i)
@@ -130,7 +130,7 @@ Usage:
         if not isinstance(state, list):
             raise TypeError("state must be list")
         state = _remove_lead_trail_false(state)
-        state.insert(0, False)
+        state.insert(0, False)  # Pad with False on both ends
         state.append(False)
         new_state = []
         for i in range(0, len(state)):
@@ -151,6 +151,7 @@ Usage:
             cur_state = self.process(cur_state)
             yield cur_state
 
+# 4 most common ones get shorthands
 rule_110 = RuleN(110)
 rule_30 = RuleN(30)
 rule_90 = RuleN(90)
