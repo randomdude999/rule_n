@@ -141,3 +141,7 @@ Usage:
             cur_state = self.process(cur_state)
             yield cur_state
 
+rule_110 = RuleN(110)
+rule_30 = RuleN(30)
+rule_90 = RuleN(90)
+rule_184 = RuleN(184)
