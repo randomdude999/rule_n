@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Python Rule 110 (and 30, 90 and 184) implemetation. (See
+"""Python Rule 110 (and 30, 90 and 184) implementation. (See
 <http://en.wikipedia.org/wiki/Rule_110>)
 
 Usage:
@@ -30,7 +30,7 @@ Usage:
     rule_110 = rule_n.RuleN()  # Default rule is 110
 
     data = rule_110.process([True, False, True])
-    len(data) == 5  # because a False is addad to both sides
+    len(data) == 5  # because a False is added to both sides
     data == [True, True, True, True, False]
 
     data_2 = rule_110.process([1, 0, 1]) # You can use any data type, as long
@@ -105,9 +105,9 @@ Default rule is 110, so the example could be shortened to:
     def __init__(self, rule_descriptor=110):
         if not isinstance(rule_descriptor, int):
             raise TypeError("rule descriptor must be integer")
-        elif rule_descriptor < 1:
-            raise TypeError("rule descriptor must be more than 0")
-        elif rule_descriptor > 255:
+        elif rule_descriptor < 0:
+            raise TypeError("rule descriptor must be more than or equal to 0")
+        elif rule_descriptor >= 256:
             raise TypeError("rule descriptor must be less than 256")
         elif rule_descriptor % 2 == 1:
             raise TypeError("rule descriptor must be even")  # FIXME
@@ -122,10 +122,13 @@ Default rule is 110, so the example could be shortened to:
 Usage:
 
     out = rule_110.process([True, False, True])
-    len(out) # 5, because a False is added to either side
-    out # [True, True, True, True, False]
+    len(out)  # 5, because a False is added to either side
+    out == [True, True, True, True, False]
     out = rule_110.process([False, True, False, True])
-    len(out) # still 5, because leading / trailing False's are removed
+    len(out)  # still 5, because leading / trailing False's are removed
+    out2 = rule_110.process([1, 0, 1])  # Any data type in the list is okay, as
+                                        # long as it's boolean value is correct
+    out == out2
 """
         if not isinstance(state, list):
             raise TypeError("state must be list")

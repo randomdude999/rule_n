@@ -4,7 +4,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/randomdude999/rule_n/badge.svg?branch=master)](https://coveralls.io/github/randomdude999/rule_n?branch=master)
 [![Code Climate](https://codeclimate.com/github/randomdude999/rule_n/badges/gpa.svg)](https://codeclimate.com/github/randomdude999/rule_n)
 
-This is a Python implemetation of Rule 110, Rule 30, Rule 90, Rule 184 and any other rule which follows this scheme.
+This is a Python implementation of Rule 110, Rule 30, Rule 90, Rule 184 and any other rule which follows this scheme.
 
 ## Usage
 
