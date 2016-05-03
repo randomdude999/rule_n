@@ -8,8 +8,8 @@ class TestBasicStuff(unittest.TestCase):
     def test_init_ruledesc_nonint(self):
         self.assertRaises(TypeError, rule_n.RuleN, "Hello")
 
-    def test_init_ruldedesc_lessthan_1(self):
-        self.assertRaises(TypeError, rule_n.RuleN, 0)
+    def test_init_ruldedesc_lessthan_0(self):
+        self.assertRaises(TypeError, rule_n.RuleN, -1)
 
     def test_init_ruledesc_morethan_255(self):
         self.assertRaises(TypeError, rule_n.RuleN, 256)
