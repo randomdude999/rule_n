@@ -12,8 +12,9 @@ engines:
     enabled: true
 ratings:
   paths:
-    - "**.py"
+    - "rule_n.py"
 exclude_paths:
   - "test.py"
   - "LICENSE"
   - "README.md"
+  - "MANIFEST.in"
