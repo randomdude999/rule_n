@@ -17,7 +17,6 @@ import rule_n
 rule_110 = rule_n.RuleN(110)
 rule_30 = rule_n.RuleN(30)
 rule_184 = rule_n.RuleN(184)  # Works with anything from 1 to 255
-rule_111 = rule_n.RuleN(111)  # TypeError: rule descriptor must be even!
 rule_110 = rule_n.RuleN()  # Default rule is 110, as that is the most common
 
 data = rule_110.process([True, False, True]) 

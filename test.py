@@ -3,6 +3,7 @@
 import unittest
 import rule_n
 
+
 class TestBasicStuff(unittest.TestCase):
 
     def test_init_ruledesc_nonint(self):
@@ -14,8 +15,9 @@ class TestBasicStuff(unittest.TestCase):
     def test_init_ruledesc_morethan_255(self):
         self.assertRaises(TypeError, rule_n.RuleN, 256)
 
-    def test_init_ruledesc_odd(self):
-        self.assertRaises(TypeError, rule_n.RuleN, 127)
+    def test_init_ruledesc_something(self):
+        # 111 has bit 0 but not bit 7
+        self.assertRaises(TypeError, rule_n.RuleN, 111)
 
     def test_init_default_rule(self):
         rule_110 = rule_n.RuleN()
@@ -55,9 +57,9 @@ class TestBasicStuff(unittest.TestCase):
             if i == 3:
                 break
         expected_outs = [  # XXX: I have no idea either
-            [False, True , True , False],
-            [False, True , True , True , False],
-            [True , True , False, True , False]
+            [False, True, True, False],
+            [False, True, True, True, False],
+            [True, True, False, True, False]
         ]
         self.assertEqual(outs, expected_outs)
 

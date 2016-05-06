@@ -26,7 +26,6 @@ Usage:
     rule_110 = rule_n.RuleN(110)
     rule_30 = rule_n.RuleN(30)
     rule_184 = rule_n.RuleN(184)  # Works with anything from 1 to 255
-    rule_111 = rule_n.RuleN(111)  # TypeError: rule descriptor must be even!
     rule_110 = rule_n.RuleN()  # Default rule is 110
 
     data = rule_110.process([True, False, True])
@@ -109,10 +108,11 @@ Default rule is 110, so the example could be shortened to:
             raise TypeError("rule descriptor must be more than or equal to 0")
         elif rule_descriptor >= 256:
             raise TypeError("rule descriptor must be less than 256")
-        elif rule_descriptor % 2 == 1:
-            raise TypeError("rule descriptor must be even")  # FIXME
-
-        self.rules = _get_rules(rule_descriptor)
+        elif bool(rule_descriptor & 2**0) and not bool(rule_descriptor & 2**7):
+            raise TypeError("rule_descriptor bit 0 can't be true if bit 7"
+                            " is false")
+        self.default_val = bool(rule_descriptor % 2)   # What to expand with in
+        self.rules = _get_rules(rule_descriptor)       # both directions
 
     def __call__(self, state):
         return self.process(state)
@@ -133,8 +133,8 @@ Usage:
         if not isinstance(state, list):
             raise TypeError("state must be list")
         state = _remove_lead_trail_false(state)
-        state.insert(0, False)  # Pad with False on both ends
-        state.append(False)
+        state.insert(0, self.default_val)
+        state.append(self.default_val)
         new_state = []
         for i in range(0, len(state)):
             result = _process_cell(i, state)
