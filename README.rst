@@ -47,7 +47,7 @@ Usage
 
  data_2 = rule_110.process([1, 0, 1])  # You can use any data type, as long as
  data == data_2                        # the boolean values of these are correct
-                                        # Return values are always in boolean
+                                       # Return values are always in boolean
 
  data_3 = rule_110([True, False, True])  # Shorthand for rule_110.process(state)
  data == data_3
