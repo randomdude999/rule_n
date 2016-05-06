@@ -21,7 +21,7 @@
    :target: http://www.gnu.org/licenses/gpl-3.0.txt
    :alt: License
 .. image:: https://img.shields.io/github/issues-raw/randomdude999/rule_n.svg
-   :target: https://github.com/randomdue999/rule_n/issues
+   :target: https://github.com/randomdude999/rule_n/issues
    :alt: Issues
 
 This is a Python implementation of Rule 110, Rule 30, Rule 90, Rule 184 and any other rule which follows this scheme.
@@ -39,7 +39,10 @@ Pip
 Manual
 ------
 
-Download ``rule_n.py`` and put it somewhere in your Python path.
+Download |rule_n.py|_ and put it somewhere in your Python path.
+
+.. |rule_n.py| replace:: ``rule_n.py``
+.. _rule_n.py: https://raw.githubusercontent.com/randomdude999/rule_n/master/rule_n.py
 
 Usage
 =====
