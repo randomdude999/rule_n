@@ -11,6 +11,18 @@
 .. image:: https://codeclimate.com/github/randomdude999/rule_n/badges/gpa.svg
    :target: https://codeclimate.com/github/randomdude999/rule_n
    :alt: Code Climate
+.. image:: https://img.shields.io/pypi/v/rule_n.svg
+   :target: https://pypi.python.org/pypi/rule_n
+   :alt: PyPI
+.. image:: https://img.shields.io/pypi/dm/rule_n.svg
+   :target: https://pypi.python.org/pypi/rule_n#downloads
+   :alt: Downloads
+.. image:: https://img.shields.io/pypi/l/rule_n.svg
+   :target: http://www.gnu.org/licenses/gpl-3.0.txt
+   :alt: License
+.. image:: https://img.shields.io/github/issues-raw/randomdude999/rule_n.svg
+   :target: https://github.com/randomdue999/rule_n/issues
+   :alt: Issues
 
 This is a Python implementation of Rule 110, Rule 30, Rule 90, Rule 184 and any other rule which follows this scheme.
 
