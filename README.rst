@@ -20,7 +20,8 @@ Installation
 Pip
 ---
 
-``pip install rule_n``
+::
+  pip install rule_n
 
 Manual
 ------
