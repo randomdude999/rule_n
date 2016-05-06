@@ -21,6 +21,7 @@ Pip
 ---
 
 ::
+
   pip install rule_n
 
 Manual
