@@ -9,5 +9,5 @@ setup(
         author='randomdude999',
         author_email='just.so.you.can.email.me@gmail.com',
         description='Python Rule 110 (and 30, 90, 184) implementation',
-        long_description=open("README.md").read()
+        long_description=open("README.rst").read()
 )
