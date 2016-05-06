@@ -30,8 +30,7 @@ Download ``rule_n.py`` and put it somewhere in your Python path.
 Usage
 =====
 
-..code-block: python
-
+::
   import rule_n
 
   rule_110 = rule_n.RuleN(110)
