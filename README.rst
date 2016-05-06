@@ -4,13 +4,13 @@
 
 .. image:: https://travis-ci.org/randomdude999/rule_n.svg
    :target: https://travis-ci.org/randomdude999/rule_n
-   :title: Travis CI
+   :alt: Travis CI
 .. image:: https://coveralls.io/repos/github/randomdude999/rule_n/badge.svg 
    :target: https://coveralls.io/github/randomdude999/rule_n
-   :title: Coveralls
+   :alt: Coveralls
 .. image:: https://codeclimate.com/github/randomdude999/rule_n/badges/gpa.svg
    :target: https://codeclimate.com/github/randomdude999/rule_n
-   :title: Code Climate
+   :alt: Code Climate
 
 This is a Python implementation of Rule 110, Rule 30, Rule 90, Rule 184 and any other rule which follows this scheme.
 
