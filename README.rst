@@ -18,7 +18,7 @@
    :target: https://pypi.python.org/pypi/rule_n#downloads
    :alt: Downloads
 .. image:: https://img.shields.io/pypi/l/rule_n.svg
-   :target: http://www.gnu.org/licenses/gpl-3.0.txt
+   :target: https://raw.githubusercontent.com/randomdude999/rule_n/master/LICENSE
    :alt: License
 .. image:: https://img.shields.io/github/issues-raw/randomdude999/rule_n.svg
    :target: https://github.com/randomdude999/rule_n/issues
