@@ -6,51 +6,6 @@ import rule_n
 
 class TestBasicStuff(unittest.TestCase):
 
-    def test_init_invalid_ruledesc_type(self):
-        self.assertRaises(TypeError, rule_n.RuleN, {'a': 'b'})
-
-    def test_init_list(self):
-        rule_110 = rule_n.RuleN()
-        rule_110_2 = rule_n.RuleN([False, True, True, False, True, True, True,
-            False])
-        self.assertEqual(rule_110.rules, rule_110_2.rules)
-
-    def test_init_tuple(self):
-        rule_110 = rule_n.RuleN()
-        rules = (False, True, True, False, True, True, True, False)
-        rule_110_2 = rule_n.RuleN(rules)
-        self.assertEqual(rule_110.rules, rule_110_2.rules)
-
-    def test_init_str(self):
-        rule_110 = rule_n.RuleN()
-        rule_110_2 = rule_n.RuleN("01101110")
-        self.assertEqual(rule_110.rules, rule_110_2.rules)
-
-    def test_init_str_len_not8(self):
-        rule_110 = rule_n.RuleN()
-        rule_110_2 = rule_n.RuleN("0110111") # missing last 0
-        self.assertEqual(rule_110.rules, rule_110_2.rules)
-
-    def test_init_list_len_not8(self):
-        rule_110 = rule_n.RuleN()
-        rules = (False, True, True, False, True, True, True)
-        rule_110_2 = rule_n.RuleN(rules)
-        self.assertEqual(rule_110.rules, rule_110_2.rules)
-
-    def test_init_ruledesc_loop_thing(self):
-        # 111 has bit 0 but not bit 7
-        self.assertRaises(ValueError, rule_n.RuleN, 111)
-
-    def test_init_default_rule(self):
-        rule_110 = rule_n.RuleN()
-        rule_110_2 = rule_n.RuleN(110)
-        self.assertEqual(rule_110.rules, rule_110_2.rules)
-
-    def test_init_working(self):
-        rule_110 = rule_n.RuleN(110)
-        correct_rules = [False, True, True, True, False, True, True, False]
-        self.assertEqual(rule_110.rules, correct_rules)
-
     def test_process(self):
         rule_110 = rule_n.RuleN()
         expected_out = [True] * 4 + [False]
@@ -106,8 +61,52 @@ class TestSpecialMethods(unittest.TestCase):
         rule_90 = rule_n.RuleN(90)
         self.assertNotEqual(rule_110, rule_90)
 
-#class TestInit(unittest.TestCase):
+class TestInit(unittest.TestCase):
 
+    def test_init_invalid_ruledesc_type(self):
+        self.assertRaises(TypeError, rule_n.RuleN, {'a': 'b'})
+
+    def test_init_list(self):
+        rule_110 = rule_n.RuleN()
+        rule_110_2 = rule_n.RuleN([False, True, True, False, True, True, True,
+            False])
+        self.assertEqual(rule_110.rules, rule_110_2.rules)
+
+    def test_init_tuple(self):
+        rule_110 = rule_n.RuleN()
+        rules = (False, True, True, False, True, True, True, False)
+        rule_110_2 = rule_n.RuleN(rules)
+        self.assertEqual(rule_110.rules, rule_110_2.rules)
+
+    def test_init_str(self):
+        rule_110 = rule_n.RuleN()
+        rule_110_2 = rule_n.RuleN("01101110")
+        self.assertEqual(rule_110.rules, rule_110_2.rules)
+
+    def test_init_str_len_not8(self):
+        rule_110 = rule_n.RuleN()
+        rule_110_2 = rule_n.RuleN("0110111") # missing last 0
+        self.assertEqual(rule_110.rules, rule_110_2.rules)
+
+    def test_init_list_len_not8(self):
+        rule_110 = rule_n.RuleN()
+        rules = (False, True, True, False, True, True, True)
+        rule_110_2 = rule_n.RuleN(rules)
+        self.assertEqual(rule_110.rules, rule_110_2.rules)
+
+    def test_init_ruledesc_loop_thing(self):
+        # 111 has bit 0 but not bit 7
+        self.assertRaises(ValueError, rule_n.RuleN, 111)
+
+    def test_init_default_rule(self):
+        rule_110 = rule_n.RuleN()
+        rule_110_2 = rule_n.RuleN(110)
+        self.assertEqual(rule_110.rules, rule_110_2.rules)
+
+    def test_init_working(self):
+        rule_110 = rule_n.RuleN(110)
+        correct_rules = [False, True, True, True, False, True, True, False]
+        self.assertEqual(rule_110.rules, correct_rules)
 
 if __name__ == '__main__':
     unittest.main()
