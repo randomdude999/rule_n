@@ -135,6 +135,23 @@ be "01101110".
     def __call__(self, state):
         return self.process(state)
 
+    def __repr__(self):
+        descriptor = 0
+        for i, x in enumerate(self.rules):
+            descriptor += 2**i if x else 0
+        return "%s(%s)" % (self.__name__, descriptor)
+
+    def __eq__(self, other):
+        if self.__class__ is other.__class__:
+            return self.rules == other.rules
+        return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __hash__(self):
+        return hash(self.rules)
+
     def process(self, state):
         """Process a state and return the next state
 Usage:
