@@ -62,12 +62,6 @@ class TestBasicStuff(unittest.TestCase):
         rule_110 = rule_n.RuleN()
         self.assertRaises(TypeError, rule_110.process, "Hello!")
 
-    def test_call(self):
-        rule_110 = rule_n.RuleN()
-        out1 = rule_110.process([True, False, True])
-        out2 = rule_110([True, False, True])
-        self.assertEqual(out1, out2)
-
     def test_iter(self):
         rule_110 = rule_n.RuleN()
         start = [True]
@@ -84,6 +78,36 @@ class TestBasicStuff(unittest.TestCase):
             [True, True, False, True, False]
         ]
         self.assertEqual(outs, expected_outs)
+
+class TestSpecialMethods(unittest.TestCase):
+
+    def test_call(self):
+        rule_110 = rule_n.RuleN()
+        out1 = rule_110.process([True, False, True])
+        out2 = rule_110([True, False, True])
+        self.assertEqual(out1, out2)
+
+    def test_repr(self):
+        rule_110 = rule_n.RuleN()
+        expected_out = "rule_n.RuleN(110)"
+        self.assertEqual(rule_110.__repr__(), expected_out)
+
+    def test_eq(self):
+        rule_110 = rule_n.RuleN()
+        rule_110_2 = rule_n.RuleN(110)
+        self.assertEqual(rule_110, rule_110_2)
+
+    def test_eq_different_type(self):
+        rule_110 = rule_n.RuleN()
+        self.assertNotEqual(rule_110, 3)
+
+    def test_ne(self):
+        rule_110 = rule_n.RuleN()
+        rule_90 = rule_n.RuleN(90)
+        self.assertNotEqual(rule_110, rule_90)
+
+#class TestInit(unittest.TestCase):
+
 
 if __name__ == '__main__':
     unittest.main()
