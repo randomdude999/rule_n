@@ -24,7 +24,7 @@
    :target: https://github.com/randomdude999/rule_n/issues
    :alt: Issues
 
-This is a Python implementation of elementary cellular automata. <https://en.wikipedia.org/wiki/Elementary_cellular_automata>
+This is a Python implementation of elementary cellular automata. <https://en.wikipedia.org/wiki/Elementary_cellular_automaton>
 
 Installation
 ============
