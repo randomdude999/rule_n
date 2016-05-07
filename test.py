@@ -6,18 +6,40 @@ import rule_n
 
 class TestBasicStuff(unittest.TestCase):
 
-    def test_init_ruledesc_nonint(self):
-        self.assertRaises(TypeError, rule_n.RuleN, "Hello")
+    def test_init_invalid_ruledesc_type(self):
+        self.assertRaises(TypeError, rule_n.RuleN, {'a': 'b'})
 
-    def test_init_ruldedesc_lessthan_0(self):
-        self.assertRaises(TypeError, rule_n.RuleN, -1)
+    def test_init_list(self):
+        rule_110 = rule_n.RuleN()
+        rule_110_2 = rule_n.RuleN([False, True, True, False, True, True, True,
+            False])
+        self.assertEqual(rule_110.rules, rule_110_2.rules)
 
-    def test_init_ruledesc_morethan_255(self):
-        self.assertRaises(TypeError, rule_n.RuleN, 256)
+    def test_init_tuple(self):
+        rule_110 = rule_n.RuleN()
+        rules = (False, True, True, False, True, True, True, False)
+        rule_110_2 = rule_n.RuleN(rules)
+        self.assertEqual(rule_110.rules, rule_110_2.rules)
 
-    def test_init_ruledesc_something(self):
+    def test_init_str(self):
+        rule_110 = rule_n.RuleN()
+        rule_110_2 = rule_n.RuleN("01101110")
+        self.assertEqual(rule_110.rules, rule_110_2.rules)
+
+    def test_init_str_len_not8(self):
+        rule_110 = rule_n.RuleN()
+        rule_110_2 = rule_n.RuleN("0110111") # missing last 0
+        self.assertEqual(rule_110.rules, rule_110_2.rules)
+
+    def test_init_list_len_not8(self):
+        rule_110 = rule_n.RuleN()
+        rules = (False, True, True, False, True, True, True)
+        rule_110_2 = rule_n.RuleN(rules)
+        self.assertEqual(rule_110.rules, rule_110_2.rules)
+
+    def test_init_ruledesc_loop_thing(self):
         # 111 has bit 0 but not bit 7
-        self.assertRaises(TypeError, rule_n.RuleN, 111)
+        self.assertRaises(ValueError, rule_n.RuleN, 111)
 
     def test_init_default_rule(self):
         rule_110 = rule_n.RuleN()
