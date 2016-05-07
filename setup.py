@@ -8,7 +8,7 @@ setup(
         license="GPLv3",
         author='randomdude999',
         author_email='just.so.you.can.email.me@gmail.com',
-        description='Python Rule 110 (and 30, 90, 184) implementation',
+        description='Elementary cellular automata in Python',
         long_description=open("README.rst").read(),
         classifiers=[
             "Development Status :: 3 - Alpha",

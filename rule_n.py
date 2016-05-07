@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-# rule_n - Python Rule 110 (and more) implementation.
+# rule_n - Elementary cellular automata in Python
 # Copyright (C) 2016  randomdude999
 #
 # This program is free software: you can redistribute it and/or modify
@@ -85,7 +85,7 @@ def _remove_lead_trail_false(bool_list):
 
 
 class RuleN(object):
-    """Rule 110, Rule 30, Rule 90 and Rule 184 interpreter. Usage:
+    """Elementary cellular automata "interpreter". Usage:
 
     rule_110 = rule_n.RuleN(110) # Create Rule 110 interpreter
 
