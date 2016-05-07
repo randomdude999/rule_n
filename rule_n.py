@@ -54,14 +54,6 @@ Usage:
 """
 
 
-def _get_rules(desc):
-    """get a list of true/false from a rule descriptor, such as 110"""
-    rules = []
-    for i in range(0, 8):
-        rules.append(bool(desc & 2**i))  # bool(desc & 2**i) gets if that bit
-    return rules                         # is set
-
-
 def _process_cell(i, state):
     """Process 3 cells and return a value from 0 to 7. """
     if i == 0:
@@ -102,17 +94,31 @@ Default rule is 110, so the example could be shortened to:
     <http://en.wikipedia.org/wiki/Rule_110#Definition> to learn more.
 """
     def __init__(self, rule_descriptor=110):
-        if not isinstance(rule_descriptor, int):
-            raise TypeError("rule descriptor must be integer")
-        elif rule_descriptor < 0:
-            raise TypeError("rule descriptor must be more than or equal to 0")
-        elif rule_descriptor >= 256:
-            raise TypeError("rule descriptor must be less than 256")
-        elif bool(rule_descriptor & 2**0) and not bool(rule_descriptor & 2**7):
-            raise TypeError("rule_descriptor bit 0 can't be true if bit 7"
-                            " is false")
-        self.default_val = bool(rule_descriptor % 2)   # What to expand with in
-        self.rules = _get_rules(rule_descriptor)       # both directions
+        if rule_descriptor is int:
+            self.rules = []
+            for i in range(0, 8):
+                self.rules.append(bool(rule_descriptor & 2**i))
+        elif rule_descriptor is list or rule_descriptor is tuple:
+            self.rules = []
+            self.rules += rule_descriptor
+            if len(self.rules) < 8:
+                for x in range(8 - len(self.rules)):
+                self.rules.append(False)
+        elif rule_descriptor is str:
+            self.rules = []
+            if len(rule_descriptor) < 8:
+                rule_descriptor += "0" * (8 - len(rule_descriptor))
+            null_chars = " 0"
+            for x in range(8):
+                if rule_descriptor[x] in null_chars:
+                    self.rules.append(False)
+                else:
+                    self.rules.append(True)
+        else:
+            raise TypeError("Invalid rule_descriptor type (must be int, list, str or tuple)")
+        if bool(self.rules[7]) and not bool(self.rules[0]):
+            raise ValueError("111 can't turn to 0 when 000 turns to 1")
+        self.default_val = self.rules[7]
 
     def __call__(self, state):
         return self.process(state)
