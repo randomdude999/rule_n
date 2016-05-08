@@ -34,6 +34,9 @@ Usage:
     # Or a string that summarizes the rule
     rule_110 = rule_n.RuleN("01101110")
     # See <https://en.wikipedia.org/wiki/Rule_110#Definition>
+    # You can also have a finite canvas
+    rule_110_finite_canvas = rule_n.RuleN(110, canvas_size=5)
+    # A canvas is finite if its size is over 0
 
     data = rule_110.process([True, False, True])
     len(data) == 5  # because a False is added to both sides
@@ -43,6 +46,10 @@ Usage:
     data == data_2                        # as the boolean values of these are
                                           # correct
                                           # Return values are always in boolean
+
+    # With a finite canvas, the output is always as big as the canvas
+    data = rule_110_finite_canvas.process([0, 0, 0, 0, 1])
+    data == [False, False, False, True, True]
 
     data_3 = rule_110([True, False, True])  # Shorthand for
                                             # rule_110.process(state)
@@ -54,6 +61,12 @@ Usage:
         i += 1
         if i == 10:
             break  # Please do this
+    # Note: Iteration on an infinte canvas seems to have some problems
+    # I recommend using a finite canvas
+    for x in rule_110_finite_canvas.iterate([0, 0, 0, 0, 1]):
+        print x
+        # This breaks automatically if the current state is equal to the
+        # previous, which will probably happen at some point on a finite canvas
 """
 
 
@@ -110,6 +123,12 @@ You can also specify the list of actions as a string of 0's and 1's. 110 would
 be "01101110".
 
     rule_110 = rule_n.RuleN("01101110")
+
+You can also have a finite canvas:
+
+    rule_110 = rule_n.RuleN(110, canvas_size=5)
+
+A canvas is finite if its size is more than 0.
 """
     def __init__(self, rule_descriptor=110, canvas_size=0):
         if type(rule_descriptor) is int:
@@ -198,8 +217,9 @@ Usage:
 
         for x in rule_110.iterate(state):
             # Do something with the current state here
-            # Note: You MUST break this yourself, or deal with the consequences
-
+            # Note: You should break this yourself
+        # This breaks automatically if the previous state was the same as the
+        # current one, but that's not gonna happen on an infinite canvas
 """
         cur_state = state
         old_state = cur_state

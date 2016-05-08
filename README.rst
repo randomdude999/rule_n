@@ -64,6 +64,9 @@ Usage
  # Or a string that summarizes the rule
  rule_110 = rule_n.RuleN("01101110")
  # See <https://en.wikipedia.org/wiki/Rule_110#Definition>
+ # You can also have a finite canvas
+ rule_110_finite_canvas = rule_n.RuleN(110, canvas_size=5)
+ # A canvas is finite if its size is over 0
 
  data = rule_110.process([True, False, True]) 
  len(data) == 5  # because a False is added to both sides
@@ -73,6 +76,10 @@ Usage
  data == data_2                        # as the boolean values of these are
                                        # correct
                                        # Return values are always in boolean
+
+ # With a finite canvas, the output is always as big as the canvas
+ data = rule_110_finite_canvas.process([0, 0, 0, 0, 1])
+ data == [False, False, False, True, True]
 
  data_3 = rule_110([True, False, True])  # Shorthand for
                                          # rule_110.process(state)
@@ -84,3 +91,9 @@ Usage
      i += 1
      if i == 10:
          break  # Please do this
+ # Note: Iteration on an infinte canvas seems to have some problems
+ # I recommend using a finite canvas
+ for x in rule_110_finite_canvas.iterate([0, 0, 0, 0, 1]):
+     print x
+     # This breaks automatically if the current state is equal to the
+     # previous, which will probably happen at some point on a finite canvas
