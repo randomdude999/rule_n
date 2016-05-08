@@ -11,11 +11,32 @@ class TestBasicStuff(unittest.TestCase):
         expected_out = [True] * 4 + [False]
         inp = [True, False, True]
         out = rule_110.process(inp)
-        self.assertEqual(out, expected_out)
+        self.assertEqual(expected_out, out)
 
     def test_process_nonlist(self):
         rule_110 = rule_n.RuleN()
         self.assertRaises(TypeError, rule_110.process, "Hello!")
+
+    def test_process_finite_canvas(self):
+        rule_110 = rule_n.RuleN(110, canvas_size=5)
+        expected_out = [False, False, False, False, False]
+        inp = [True, True, True, True, True]
+        out = rule_110.process(inp)
+        self.assertEqual(expected_out, out)
+
+    def test_process_list_too_short(self):
+        rule_110 = rule_n.RuleN(110, canvas_size=5)
+        expected_out = [False, False, True, True, False]
+        inp = [False] * 3 + [True]
+        out = rule_110.process(inp)
+        self.assertEqual(expected_out, out)
+
+    def test_process_list_too_long(self):
+        rule_110 = rule_n.RuleN(110, canvas_size=5)
+        expected_out = [False] * 3 + [True] * 2
+        inp = [False] * 4 + [True, False]
+        out = rule_110.process(inp)
+        self.assertEqual(expected_out, out)
 
     def test_iter(self):
         rule_110 = rule_n.RuleN()
@@ -32,7 +53,22 @@ class TestBasicStuff(unittest.TestCase):
             [False, True, True, True, False],
             [True, True, False, True, False]
         ]
-        self.assertEqual(outs, expected_outs)
+        self.assertEqual(expected_outs, outs)
+
+    def test_iter_finite_canvas(self):
+        rule_110 = rule_n.RuleN(110, canvas_size=5)
+        start = [False] * 4 + [True]
+        expected_outs = [
+            [False, False, False, True, True],
+            [False, False, True, True, True],
+            [False, True, True, False, True],
+            [True] * 5,
+            [False] * 5
+        ]
+        outs = []
+        for x in rule_110.iterate(start):
+            outs.append(x)
+        self.assertEqual(expected_outs, outs)
 
 class TestSpecialMethods(unittest.TestCase):
 
@@ -45,7 +81,7 @@ class TestSpecialMethods(unittest.TestCase):
     def test_repr(self):
         rule_110 = rule_n.RuleN()
         expected_out = "rule_n.RuleN(110)"
-        self.assertEqual(rule_110.__repr__(), expected_out)
+        self.assertEqual(expected_out, rule_110.__repr__())
 
     def test_eq(self):
         rule_110 = rule_n.RuleN()
@@ -107,6 +143,10 @@ class TestInit(unittest.TestCase):
         rule_110 = rule_n.RuleN(110)
         correct_rules = [False, True, True, True, False, True, True, False]
         self.assertEqual(rule_110.rules, correct_rules)
+
+    def test_init_finite_canvas(self):
+        rule_110 = rule_n.RuleN(110, canvas_size=5)
+        self.assertTrue(rule_110.finite_canvas)
 
 if __name__ == '__main__':
     unittest.main()
