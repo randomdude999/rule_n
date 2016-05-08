@@ -57,15 +57,21 @@ Usage:
 """
 
 
-def _process_cell(i, state):
+def _process_cell(i, state, finite=False):
     """Process 3 cells and return a value from 0 to 7. """
     if i == 0:
-        op_1 = 0  # All 0's before the beginning
+        if finite:
+            op_1 = state[-1]
+        else:
+            op_1 = 0
     else:
         op_1 = state[i - 1]
     op_2 = state[i]
     if i == len(state) - 1:
-        op_3 = 0  # All 0's after the end
+        if finite:
+            op_3 = state[0]
+        else:
+            op_3 = 0
     else:
         op_3 = state[i + 1]
     result = 0
@@ -105,7 +111,7 @@ be "01101110".
 
     rule_110 = rule_n.RuleN("01101110")
 """
-    def __init__(self, rule_descriptor=110):
+    def __init__(self, rule_descriptor=110, canvas_size=0):
         if type(rule_descriptor) is int:
             self.rules = []
             for i in range(8):
@@ -127,10 +133,17 @@ be "01101110".
                     self.rules.append(True)
             self.rules.reverse()
         else:
-            raise TypeError("Invalid rule_descriptor type (must be int, list, str or tuple)")
-        if bool(self.rules[0]) and not bool(self.rules[7]):
-            raise ValueError("111 can't turn to 0 when 000 turns to 1")
-        self.default_val = self.rules[7]
+            raise TypeError("Invalid rule_descriptor type (must be int, list, "
+                "str or tuple)")
+        if canvas_size <= 0:
+            if bool(self.rules[0]) and not bool(self.rules[7]):
+                raise ValueError("111 can't turn to 0 when 000 turns to 1")
+            self.default_val = self.rules[7]
+            self.finite_canvas = False
+            self.canvas_size = 0
+        else:
+            self.canvas_size = canvas_size
+            self.finite_canvas = True
 
     def __call__(self, state):
         return self.process(state)
@@ -144,7 +157,7 @@ be "01101110".
 
     def __eq__(self, other):
         if self.__class__ is other.__class__:
-            return self.rules == other.rules
+            return self.rules == other.rules and self.canvas_size == other.canvas_size
         return False
 
     def __ne__(self, other):
@@ -165,12 +178,18 @@ Usage:
 """
         if not isinstance(state, list):
             raise TypeError("state must be list")
-        state = _remove_lead_trail_false(state)
-        state.insert(0, self.default_val)
-        state.append(self.default_val)
+        if self.finite_canvas:
+            for x in range(self.canvas_size - len(state)):
+                state.append(False)
+            for x in range(len(state) - self.canvas_size):
+                state.pop()
+        else:
+            state = _remove_lead_trail_false(state)
+            state.insert(0, self.default_val)
+            state.append(self.default_val)
         new_state = []
         for i in range(0, len(state)):
-            result = _process_cell(i, state)
+            result = _process_cell(i, state, finite=self.finite_canvas)
             new_state.append(self.rules[result])
         return new_state
 
@@ -183,8 +202,12 @@ Usage:
 
 """
         cur_state = state
+        old_state = cur_state
         while True:
             cur_state = self.process(cur_state)
+            if old_state == cur_state:
+                break
+            old_state = cur_state
             yield cur_state
 
 # 4 most common ones get shorthands
