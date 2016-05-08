@@ -26,11 +26,11 @@ Usage:
     rule_110 = rule_n.RuleN(110)
     rule_30 = rule_n.RuleN(30)
     rule_184 = rule_n.RuleN(184)  # Works with anything from 1 to 255
-    rule_110 = rule_n.RuleN()  # Default rule is 110, as that is the most common
+    rule_110 = rule_n.RuleN()  # Default rule is 110
     from rule_n import rule_90   # Shorthand for rule_90 = rule_n.RuleN(90)
                                  # Works with 110, 30, 90, 184
     # You can also specify a list of rules
-    rule_110 = rule_n.RuleN([False, True, True, False, True, True, True, False])
+    rule_110 = rule_n.RuleN([False, True, True, False] + [True] * 3 + [False])
     # Or a string that summarizes the rule
     rule_110 = rule_n.RuleN("01101110")
     # See <https://en.wikipedia.org/wiki/Rule_110#Definition>
@@ -72,13 +72,7 @@ Usage:
 
 def _process_cell(i, state, finite=False):
     """Process 3 cells and return a value from 0 to 7. """
-    if i == 0:
-        if finite:
-            op_1 = state[-1]
-        else:
-            op_1 = 0
-    else:
-        op_1 = state[i - 1]
+    op_1 = state[i - 1]
     op_2 = state[i]
     if i == len(state) - 1:
         if finite:
@@ -101,6 +95,54 @@ def _remove_lead_trail_false(bool_list):
         while bool_list and not bool_list[i]:
             bool_list.pop(i)
     return bool_list
+
+
+def _crop_list_to_size(l, size):
+    """Make a list a certain size"""
+    for x in range(size - len(l)):
+        l.append(False)
+    for x in range(len(l) - size):
+        l.pop()
+    return l
+
+
+def _rules_from_int(inp):
+    rules = []
+    for i in range(8):
+        rules.append(bool(inp & 2**i))
+    return rules
+
+
+def _rules_from_list(l):
+    rules = _crop_list_to_size(list(l), 8)
+    rules.reverse()
+    return rules
+
+
+def _rules_from_str(s):
+    rules = []
+    if len(s) < 8:
+        s += "0" * (8 - len(s))
+    null_chars = " 0"
+    for x in range(8):
+        if s[x] in null_chars:
+            rules.append(False)
+        else:
+            rules.append(True)
+    rules.reverse()
+    return rules
+
+
+def _proc_rules(rule_descriptor):
+    if type(rule_descriptor) is int:
+        return _rules_from_int(rule_descriptor)
+    elif type(rule_descriptor) is list or type(rule_descriptor) is tuple:
+        return _rules_from_list(rule_descriptor)
+    elif type(rule_descriptor) is str:
+        return _rules_from_str(rule_descriptor)
+    else:
+        raise TypeError("Invalid rule_descriptor type (must be int, list, "
+                        "str or tuple)")
 
 
 class RuleN(object):
@@ -131,29 +173,7 @@ You can also have a finite canvas:
 A canvas is finite if its size is more than 0.
 """
     def __init__(self, rule_descriptor=110, canvas_size=0):
-        if type(rule_descriptor) is int:
-            self.rules = []
-            for i in range(8):
-                self.rules.append(bool(rule_descriptor & 2**i))
-        elif type(rule_descriptor) is list or type(rule_descriptor) is tuple:
-            self.rules = list(rule_descriptor)
-            if len(self.rules) < 8:
-                self.rules += [False] * (8 - len(rule_descriptor))
-            self.rules.reverse()
-        elif type(rule_descriptor) is str:
-            self.rules = []
-            if len(rule_descriptor) < 8:
-                rule_descriptor += "0" * (8 - len(rule_descriptor))
-            null_chars = " 0"
-            for x in range(8):
-                if rule_descriptor[x] in null_chars:
-                    self.rules.append(False)
-                else:
-                    self.rules.append(True)
-            self.rules.reverse()
-        else:
-            raise TypeError("Invalid rule_descriptor type (must be int, list, "
-                "str or tuple)")
+        self.rules = _proc_rules(rule_descriptor)
         if canvas_size <= 0:
             if bool(self.rules[0]) and not bool(self.rules[7]):
                 raise ValueError("111 can't turn to 0 when 000 turns to 1")
@@ -172,11 +192,12 @@ A canvas is finite if its size is more than 0.
         for i, x in enumerate(self.rules):
             descriptor += 2**i if x else 0
         return "%s.%s(%s)" % (self.__class__.__module__,
-            self.__class__.__name__, descriptor)
+                              self.__class__.__name__, descriptor)
 
     def __eq__(self, other):
         if self.__class__ is other.__class__:
-            return self.rules == other.rules and self.canvas_size == other.canvas_size
+            return (self.rules == other.rules and
+                    self.canvas_size == other.canvas_size)
         return False
 
     def __ne__(self, other):
@@ -198,10 +219,7 @@ Usage:
         if not isinstance(state, list):
             raise TypeError("state must be list")
         if self.finite_canvas:
-            for x in range(self.canvas_size - len(state)):
-                state.append(False)
-            for x in range(len(state) - self.canvas_size):
-                state.pop()
+            state = _crop_list_to_size(state, self.canvas_size)
         else:
             state = _remove_lead_trail_false(state)
             state.insert(0, self.default_val)
