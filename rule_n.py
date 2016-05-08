@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-# rule_n - Python Rule 110 (and more) implementation.
+# rule_n - Elementary cellular automata in Python
 # Copyright (C) 2016  randomdude999
 #
 # This program is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Python Rule 110 (and 30, 90 and 184) implementation. (See
-<http://en.wikipedia.org/wiki/Rule_110>)
+"""Elementary cellular automata in Python. (See
+<http://en.wikipedia.org/wiki/Elementary_cellular_automaton>)
 
 Usage:
 
@@ -27,50 +27,58 @@ Usage:
     rule_30 = rule_n.RuleN(30)
     rule_184 = rule_n.RuleN(184)  # Works with anything from 1 to 255
     rule_110 = rule_n.RuleN()  # Default rule is 110
+    from rule_n import rule_90   # Shorthand for rule_90 = rule_n.RuleN(90)
+                                 # Works with 110, 30, 90, 184
+    # You can also specify a list of rules
+    rule_110 = rule_n.RuleN([False, True, True, False] + [True] * 3 + [False])
+    # Or a string that summarizes the rule
+    rule_110 = rule_n.RuleN("01101110")
+    # See <https://en.wikipedia.org/wiki/Rule_110#Definition>
+    # You can also have a finite canvas
+    rule_110_finite_canvas = rule_n.RuleN(110, canvas_size=5)
+    # A canvas is finite if its size is over 0
 
     data = rule_110.process([True, False, True])
     len(data) == 5  # because a False is added to both sides
     data == [True, True, True, True, False]
 
-    data_2 = rule_110.process([1, 0, 1]) # You can use any data type, as long
-    data == data_2                       # as the boolean values of these are
-                                         # correct
-                                         # Return values are always in boolean
+    data_2 = rule_110.process([1, 0, 1])  # You can use any data type, as long
+    data == data_2                        # as the boolean values of these are
+                                          # correct
+                                          # Return values are always in boolean
+
+    # With a finite canvas, the output is always as big as the canvas
+    data = rule_110_finite_canvas.process([0, 0, 0, 0, 1])
+    data == [False, False, False, True, True]
 
     data_3 = rule_110([True, False, True])  # Shorthand for
                                             # rule_110.process(state)
     data == data_3
 
     i = 0
-    for x in rule_110.iterate([1, 0, 1]): # Repeatedly process a state
+    for x in rule_110.iterate([1, 0, 1]):  # Repeatedly process a state
         print x
         i += 1
         if i == 10:
-            break
-
-    from rule_n import rule_90  # Shorthand for rule_90 = rule_n.RuleN(90)
-                                # Works with 110, 30, 90, 184
-
+            break  # Please do this
+    # Note: Iteration on an infinte canvas seems to have some problems
+    # I recommend using a finite canvas
+    for x in rule_110_finite_canvas.iterate([0, 0, 0, 0, 1]):
+        print x
+        # This breaks automatically if the current state is equal to the
+        # previous, which will probably happen at some point on a finite canvas
 """
 
 
-def _get_rules(desc):
-    """get a list of true/false from a rule descriptor, such as 110"""
-    rules = []
-    for i in range(0, 8):
-        rules.append(bool(desc & 2**i))  # bool(desc & 2**i) gets if that bit
-    return rules                         # is set
-
-
-def _process_cell(i, state):
+def _process_cell(i, state, finite=False):
     """Process 3 cells and return a value from 0 to 7. """
-    if i == 0:
-        op_1 = 0  # All 0's before the beginning
-    else:
-        op_1 = state[i - 1]
+    op_1 = state[i - 1]
     op_2 = state[i]
     if i == len(state) - 1:
-        op_3 = 0  # All 0's after the end
+        if finite:
+            op_3 = state[0]
+        else:
+            op_3 = 0
     else:
         op_3 = state[i + 1]
     result = 0
@@ -89,8 +97,56 @@ def _remove_lead_trail_false(bool_list):
     return bool_list
 
 
+def _crop_list_to_size(l, size):
+    """Make a list a certain size"""
+    for x in range(size - len(l)):
+        l.append(False)
+    for x in range(len(l) - size):
+        l.pop()
+    return l
+
+
+def _rules_from_int(inp):
+    rules = []
+    for i in range(8):
+        rules.append(bool(inp & 2**i))
+    return rules
+
+
+def _rules_from_list(l):
+    rules = _crop_list_to_size(list(l), 8)
+    rules.reverse()
+    return rules
+
+
+def _rules_from_str(s):
+    rules = []
+    if len(s) < 8:
+        s += "0" * (8 - len(s))
+    null_chars = " 0"
+    for x in range(8):
+        if s[x] in null_chars:
+            rules.append(False)
+        else:
+            rules.append(True)
+    rules.reverse()
+    return rules
+
+
+def _proc_rules(rule_descriptor):
+    if type(rule_descriptor) is int:
+        return _rules_from_int(rule_descriptor)
+    elif type(rule_descriptor) is list or type(rule_descriptor) is tuple:
+        return _rules_from_list(rule_descriptor)
+    elif type(rule_descriptor) is str:
+        return _rules_from_str(rule_descriptor)
+    else:
+        raise TypeError("Invalid rule_descriptor type (must be int, list, "
+                        "str or tuple)")
+
+
 class RuleN(object):
-    """Rule 110, Rule 30, Rule 90 and Rule 184 interpreter. Usage:
+    """Elementary cellular automata "interpreter". Usage:
 
     rule_110 = rule_n.RuleN(110) # Create Rule 110 interpreter
 
@@ -98,24 +154,54 @@ Default rule is 110, so the example could be shortened to:
 
     rule_110 = rule_n.RuleN()
 
-    This works with any numbered rule numbered in this manner, see
-    <http://en.wikipedia.org/wiki/Rule_110#Definition> to learn more.
+This works with any numbered rule numbered in this manner, see
+<http://en.wikipedia.org/wiki/Rule_110#Definition> to learn more.
+
+You can also specify a list of actions directly. In this case, 110 would become
+[False, True, True, False, True, True, True, False]. See the abovementioned
+link for explanation.
+
+You can also specify the list of actions as a string of 0's and 1's. 110 would
+be "01101110".
+
+    rule_110 = rule_n.RuleN("01101110")
+
+You can also have a finite canvas:
+
+    rule_110 = rule_n.RuleN(110, canvas_size=5)
+
+A canvas is finite if its size is more than 0.
 """
-    def __init__(self, rule_descriptor=110):
-        if not isinstance(rule_descriptor, int):
-            raise TypeError("rule descriptor must be integer")
-        elif rule_descriptor < 0:
-            raise TypeError("rule descriptor must be more than or equal to 0")
-        elif rule_descriptor >= 256:
-            raise TypeError("rule descriptor must be less than 256")
-        elif bool(rule_descriptor & 2**0) and not bool(rule_descriptor & 2**7):
-            raise TypeError("rule_descriptor bit 0 can't be true if bit 7"
-                            " is false")
-        self.default_val = bool(rule_descriptor % 2)   # What to expand with in
-        self.rules = _get_rules(rule_descriptor)       # both directions
+    def __init__(self, rule_descriptor=110, canvas_size=0):
+        self.rules = _proc_rules(rule_descriptor)
+        if canvas_size <= 0:
+            if bool(self.rules[0]) and not bool(self.rules[7]):
+                raise ValueError("111 can't turn to 0 when 000 turns to 1")
+            self.default_val = self.rules[7]
+            self.finite_canvas = False
+            self.canvas_size = 0
+        else:
+            self.canvas_size = canvas_size
+            self.finite_canvas = True
 
     def __call__(self, state):
         return self.process(state)
+
+    def __repr__(self):
+        descriptor = 0
+        for i, x in enumerate(self.rules):
+            descriptor += 2**i if x else 0
+        return "%s.%s(%s)" % (self.__class__.__module__,
+                              self.__class__.__name__, descriptor)
+
+    def __eq__(self, other):
+        if self.__class__ is other.__class__:
+            return (self.rules == other.rules and
+                    self.canvas_size == other.canvas_size)
+        return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
     def process(self, state):
         """Process a state and return the next state
@@ -132,12 +218,15 @@ Usage:
 """
         if not isinstance(state, list):
             raise TypeError("state must be list")
-        state = _remove_lead_trail_false(state)
-        state.insert(0, self.default_val)
-        state.append(self.default_val)
+        if self.finite_canvas:
+            state = _crop_list_to_size(state, self.canvas_size)
+        else:
+            state = _remove_lead_trail_false(state)
+            state.insert(0, self.default_val)
+            state.append(self.default_val)
         new_state = []
         for i in range(0, len(state)):
-            result = _process_cell(i, state)
+            result = _process_cell(i, state, finite=self.finite_canvas)
             new_state.append(self.rules[result])
         return new_state
 
@@ -146,12 +235,17 @@ Usage:
 
         for x in rule_110.iterate(state):
             # Do something with the current state here
-            # Note: You MUST break this yourself, or deal with the consequences
-
+            # Note: You should break this yourself
+        # This breaks automatically if the previous state was the same as the
+        # current one, but that's not gonna happen on an infinite canvas
 """
         cur_state = state
+        old_state = cur_state
         while True:
             cur_state = self.process(cur_state)
+            if old_state == cur_state:
+                break
+            old_state = cur_state
             yield cur_state
 
 # 4 most common ones get shorthands
