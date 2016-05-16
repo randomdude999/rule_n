@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
         name='rule_n',
-        version='0.2',
+        version='0.2.1',
         py_modules=['rule_n'],
         url='https://github.com/randomdude999/rule_n',
         license="GPLv3",
