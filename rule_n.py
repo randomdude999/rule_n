@@ -244,7 +244,7 @@ Usage:
         while True:
             cur_state = self.process(cur_state)
             if old_state == cur_state:
-                raise StopIteration
+                break
             old_state = cur_state
             yield cur_state
 
